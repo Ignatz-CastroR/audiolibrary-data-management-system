@@ -259,19 +259,23 @@
 
        MASTER-PAR.
 
-      * The very first action thid master COBOL source code file
-      * exexutes is ordering the system to set "chcp 1252".
+      * The very first action this master COBOL source code file
+      * executes is ordering the system to set "chcp 1252".
       * This ensures that everything after this instruction, in the
       * compiled .exe application file, displays correctly both
       * Spanish and English characters without corruptions.
 
            CALL "SYSTEM" USING WS-CODEPAGE-CMD
 
-           DISPLAY SC-OPENING-SCREEN
-
-           ACCEPT OMITTED
+           PERFORM FRONT-PAGE-PAR
 
            STOP RUN.
+
+       FRONT-PAGE-PAR.
+
+           DISPLAY SC-OPENING-SCREEN
+
+           ACCEPT OMITTED.
 
 
        END PROGRAM MAIN.
