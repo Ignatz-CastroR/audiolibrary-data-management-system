@@ -31,22 +31,23 @@ SQLite driver for the database layer. Everything else stays pure COBOL.
 ## Project layout
 
     SRC/
-      MAIN.cbl              Entry point (currently a placeholder - see
-                             DOCS/ARCHITECTURE-DECISIONS.md for the
-                             planned login/menu flow)
+      MAIN.cbl              Entry point [currently a placeholder - see
+                            DOCS/ARCHITECTURE-DECISIONS.md for the
+                            planned login/menu flow]
       COBOL-FUNCTIONS/      Standalone, independently-tested utility
-                             functions (time arithmetic, secure password
-                             and recovery-code generation)
-      COBOL-MODULES/        Larger interactive modules (login, settings,
-                             menus) - not yet built
+                            functions [time arithmetic, secure password
+                            and recovery-code generation]
+      COBOL-MODULES/        Larger interactive modules [login, settings,
+                            menus]; not yet built
       COPYBOOKS/            Shared record layouts, included via COPY
       TESTS/                Test programs proving each function in
-                             COBOL-FUNCTIONS/ actually works - built
-                             and run before every change is trusted
+                            COBOL-FUNCTIONS/ actually works: built
+                            and run before every change is trusted
       GO-FUNCTIONS/         Go bridges for anything COBOL can't do
-                             natively (currently: secure randomness)
-      DAT-FILES/            Runtime data (indexed files, the SQLite
-                             database) - never committed; see .gitignore
+                            natively
+      DAT-FILES/            Runtime data [configuration files,
+                            indexed files, the SQLite
+                            database]; never committed; see .gitignore
 
 ## Building
 
