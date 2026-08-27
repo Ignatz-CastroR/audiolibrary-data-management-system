@@ -159,7 +159,9 @@ func HAS_INTERNET_CONNECTION() C.int {
 
 // "buildMessage" assembles a plain, complete RFC 5322 email: headers
 // and body together, ready to hand to "smtp.SendMail" as raw bytes.
-// NOTE: since the goal COBOL application will work both in English and
+// No action is needed: this recovery password is useless without also knowing
+// the account's registered email address.
+// NOTE: since the finished COBOL application will work both in English and
 // Spanish, an expansion of this function shall be necessary later on
 // in order to deliver the message either in English or in Spanish,
 // according the language settings chosen by the user in the
@@ -167,7 +169,7 @@ func HAS_INTERNET_CONNECTION() C.int {
 
 func buildMessage(from, to, recoveryPassword string) []byte {
 	headers := fmt.Sprintf(
-		"From: %s\r\nTo: %s\r\nSubject: Password Recovery - Audio Library Catalog\r\n"+
+		"From: %s\r\nTo: %s\r\nSubject: Password Recovery - MUZIKA KALIMERA\r\n"+
 			"MIME-Version: 1.0\r\nContent-Type: text/plain; charset=\"utf-8\"\r\n\r\n",
 		from, to,
 	)
