@@ -1,0 +1,35 @@
+# Compiled COBOL artifacts - never commit build output, only source
+*.o
+*.obj
+*.exe
+*.int
+*.gnt
+*.lst
+*.dyn
+
+# Compiled Go artifacts (shared libraries + their generated C headers)
+*.so
+*.dll
+*.dylib
+*.h
+
+# Runtime data: indexed files, the SQLite database, anything holding
+# real (or test) user data, hashed passwords, or recovery codes.
+# The folder itself is tracked (see SRC/DAT-FILES/.gitkeep) - its
+# contents at runtime are not, on purpose.
+SRC/DAT-FILES/*
+!SRC/DAT-FILES/.gitkeep
+
+# Personal working folders - never intended for this public repo
+HISTORICAL/
+INSTRUCTIONS/
+
+# OS-generated junk
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor/IDE local settings
+.vscode/
+.idea/
+*.swp
