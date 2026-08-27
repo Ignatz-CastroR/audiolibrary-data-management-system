@@ -2,9 +2,28 @@
 
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
-2026/08/26
+## [2026-08-27]
 
-## [Unreleased]
+### Added
+- `GO-FUNCTIONS/SEND_RECOVERY_EMAIL.go`. Exports two Go functions:
+`HAS_INTERNET_CONNECTION()`, which checks whether an active internet
+connection is available on the machine running the COBOL application,
+and `SEND_RECOVERY_EMAIL()`, which sends a one-time recovery password
+to a user's registered e-mail address in case he/she forgets his/her
+password. `SEND_RECOVERY_EMAIL()` takes four parameters: the
+recipient's e-mail address, the one-time recovery password itself,
+and the sending account's own e-mail address and app password (the
+from-address is filled in automatically from the sending account, so
+no separate field is needed for it). The sending account's e-mail
+and app password shall be read from a CONFIGURATION.dat file [with
+data initially supplied by the user] within the COBOL application.
+- `TESTS/TEST-SEND-RECOVERY-EMAIL.cbl`. A COBOL program that tests
+`HAS_INTERNET_CONNECTION()` and `SEND_RECOVERY_EMAIL()` together.
+Verified working end-to-end: recovery password e-mail messages were
+successfully sent through both a Gmail and a Yahoo sending account,
+in both cases landing outside spam.
+
+## [2026-08-26]
 
 ### Fixed
 - `RECOVERY_RANDOM_GEN.go` still generated numbers up to 48 after the
@@ -36,7 +55,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
   the repository entirely. Now holds five test programs -
   `TEST-TIMES-FUNCS.cbl`, `TEST-PSSWRD-GEN-FUNC.cbl`,
   `TEST-ONE-TIME-CODE.cbl`, `TEST-RANDOM-NUMBER-GEN.cbl`, and
-  `TEST-SECURE-RANDOM-1-78.cbl` - each rebuilt and rerun against the
+  `TEST-SECURE-RANDOM-1-78.cbl`; each rebuilt and rerun against the
   real multi-folder layout, not just in isolation. Setting this up
   is what surfaced the `TEST-PSSWRD-GEN-FUNC.cbl` field-size bug
   listed above; it had been silently drifting from the function it
@@ -44,5 +63,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/).
   sections for what's in this folder and the exact commands to run
   each test.
 - Project-specific `.gitignore`, `README.md`, and `LICENSE` [all
-  previously empty placeholders]. Work was begun on the MAIN.cbl COBOL file
-  [which shall be the master COBOL file], SRC/ subfolder.
+  previously empty placeholders]. Work was begun on the MAIN.cbl COBOL
+  file [which shall be the master COBOL file] in the SRC/ subfolder.
+
+B"H.

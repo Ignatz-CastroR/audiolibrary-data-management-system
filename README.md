@@ -7,20 +7,26 @@ application for adding and managing records afterward.
 
 ## Why COBOL
 
-This project is deliberately COBOL-first. The goal isn't nostalgia; far from it;
-it's demonstrating that COBOL fundamentals [file handling, calling
-conventions, LINKAGE SECTION design, indexed-file architecture, and much more] can
-be combined with modern engineering practices: automated testing,
-cryptographically sound randomness, and clean interop with a modern
-language where COBOL genuinely has no native answer of its own, as well as used in tandem with
-modern programming languages to produce industry level, useful, non-trivial applications.
+This project is deliberately COBOL-first. The goal isn't nostalgia [far from
+it]; it's demonstrating that COBOL fundamentals [file handling, calling
+conventions, LINKAGE SECTION design, indexed-file architecture, and much more]
+can be combined with modern engineering practices [automated testing,
+cryptographically sound randomness, and clean interop with a modern language
+where COBOL genuinely has no native answer of its own], and used in tandem
+with modern programming languages to produce industry-level, useful,
+non-trivial applications.
 
 ## Where COBOL needs help, and how it gets it
 
-The version of COBOL used in this project [GNU COBOL] has no built-in
-cryptographically secure random number generators, no password hashing, and no simple and direct SQL database driver access, among other things. Rather than creating defective attempts at reproducing any of these, this project bridges to small, focused Go functions for exactly the pieces of functionality COBOL can't do on its own,
-for instance, crypto/rand for anything cryptographically security-relevant, and [planned] a SQLite
-driver for the database layer. Everything else stays pure COBOL.
+GnuCOBOL, the compiler this project uses, has no built-in cryptographically
+secure random number generator, no password hashing, and no simple and
+direct SQL database driver access, among other things. The same is true
+of every COBOL implementation, since none of this was ever part of any
+COBOL standard. Rather than risking a flawed, hand-rolled reproduction of
+any of these, this project bridges to small, focused Go functions for
+exactly the pieces of functionality COBOL can't do on its own, for
+instance, crypto/rand for anything security-relevant, and [planned] a
+SQLite driver for the database layer. Everything else stays pure COBOL.
 
 ## Project layout
 
@@ -44,8 +50,9 @@ driver for the database layer. Everything else stays pure COBOL.
 
 ## Building
 
-Requires GnuCOBOL [cobc] and Go, both compiled ahead of time. The resulting binaries need no
-internet and no installed compiler on the machine they run on.
+Requires GnuCOBOL [cobc] and Go, both compiled ahead of time on a machine
+with internet access. The resulting binaries need no internet and no
+installed compiler on the machine they run on.
 
 Important: files that use a copybook from COPYBOOKS/ need the -I
 flag, since cobc only searches the same directory as the source file
@@ -63,7 +70,6 @@ Go functions build as C-shared libraries and link against the COBOL side with -f
 Example:
 
     go build -buildmode=c-shared -o SECURE_RANDOM_NUMBER_GEN.dll SRC/GO-FUNCTIONS/SECURE_RANDOM_NUMBER_GEN.go
-                ******************
     cobc -x -fstatic-call SRC/TESTS/TEST-PSSWRD-GEN-FUNC.cbl SRC/COBOL-FUNCTIONS/PSSWRD-GEN-FUNC.cbl SECURE_RANDOM_NUMBER_GEN.dll -o TEST-PSSWRD-GEN-FUNC
 
 Some functions call the Go bridge by a name stored in a variable
@@ -84,11 +90,15 @@ considered done. See CHANGE-LOG.md for what's been caught this way.
 ## Status
 
 Actively in development. Part of the utility layer [time arithmetic, secure
-password generation, one-time recovery codes] is already built and has
-dedicated test coverage. The interactive login/menu system and the
+password generation, one-time recovery codes, and e-mail-based password
+recovery] is already built and has dedicated test coverage; the e-mail
+recovery functionality has been verified end-to-end against real Gmail
+and Yahoo accounts. The interactive login/menu system and the
 Excel-to-SQLite migration pipeline are designed [see DOCS/] but have not been
 implemented yet.
 
 ## License
 
 See LICENSE.
+
+B"H.

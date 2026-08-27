@@ -6,6 +6,10 @@
 *.gnt
 *.lst
 *.dyn
+*.exe
+
+# Local test COBOL source code files.
+*-LOCAL.cbl
 
 # Compiled Go artifacts (shared libraries + their generated C headers)
 *.so
