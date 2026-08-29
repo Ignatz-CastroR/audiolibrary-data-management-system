@@ -4,16 +4,19 @@
       * Program tested: PSSWRD-GEN-FUNC.cbl
       * Purpose: Generates and displays 20 sample passwords from
       * the PSSWRD-GEN-FUNC COBOL function, then runs 300 more silently
-      * to check for the two defects the original version had:
-      * an internal blank space from the STRING/loop-counter
-      * pointer collision, and a length outside the
-      * intended 12-15 range. Both counts should read 0.
+      * to check for the two defects the original version had [an
+      * internal blank space from the STRING/loop-counter pointer
+      * collision, and a length outside the intended 12-15 range],
+      * plus one more check: that VERIFY-PSSWRD-FUNC independently
+      * accepts every single one, since PSSWRD-GEN-FUNC now regenerates
+      * internally until that same function accepts its own output.
+      * All three counts should read 0.
       * Tectonics: go build -buildmode=c-shared -o
       * SECURE_RANDOM_NUMBER_GEN.dll SECURE_RANDOM_NUMBER_GEN.go
       *     ********************
       * cobc -x -fstatic-call TEST-PSSWRD-GEN-FUNC.cbl
-      * PSSWRD-GEN-FUNC.cbl SECURE_RANDOM_NUMBER_GEN.dll
-      * -o TEST-PSSWRD-GEN-FUNC
+      * PSSWRD-GEN-FUNC.cbl VERIFY-PSSWRD-FUNC.cbl
+      * SECURE_RANDOM_NUMBER_GEN.dll -o TEST-PSSWRD-GEN-FUNC
       ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TEST-PSSWRD-GEN-FUNC.
@@ -21,18 +24,21 @@
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        REPOSITORY.
-           FUNCTION PSSWRD-GEN-FUNC.
+           FUNCTION PSSWRD-GEN-FUNC
+           FUNCTION VERIFY-PSSWRD-FUNC.
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
        01 WS-RESULT.
            05 WS-PASSWORD    PIC X(15).
            05 WS-STATUS      PIC 9.
+       01 WS-RECHECK        PIC 9.
        01 WS-I             PIC 9(3).
        01 WS-J             PIC 9(2).
        01 WS-USED-LEN       PIC 9(2).
        01 WS-GAP-COUNT      PIC 9(3) VALUE 0.
        01 WS-BAD-LEN-COUNT  PIC 9(3) VALUE 0.
+       01 WS-REJECT-COUNT   PIC 9(3) VALUE 0.
        01 WS-HAS-GAP        PIC X.
 
        PROCEDURE DIVISION.
@@ -50,7 +56,9 @@
            END-PERFORM
 
       * Part 2: run 300 more, silently, checking for the two
-      * defects the original version actually had.
+      * defects the original version actually had, plus one more:
+      * that VERIFY-PSSWRD-FUNC independently agrees every result is
+      * actually valid.
 
            DISPLAY " ".
            DISPLAY "=== Running 300 more, checking for defects ===".
@@ -73,6 +81,12 @@
                IF WS-HAS-GAP = "Y"
                    ADD 1 TO WS-GAP-COUNT
                END-IF
+
+               MOVE FUNCTION VERIFY-PSSWRD-FUNC(WS-PASSWORD)
+                   TO WS-RECHECK
+               IF WS-RECHECK NOT = 1
+                   ADD 1 TO WS-REJECT-COUNT
+               END-IF
            END-PERFORM
 
            DISPLAY " ".
@@ -80,5 +94,14 @@
                WS-BAD-LEN-COUNT.
            DISPLAY "Passwords with an internal gap (want 0): "
                WS-GAP-COUNT.
+           DISPLAY "Passwords VERIFY-PSSWRD-FUNC rejected (want 0): "
+               WS-REJECT-COUNT.
 
-           STOP RUN.
+           ACCEPT OMITTED
+
+           STOP RUN RETURNING 0.
+
+       END PROGRAM TEST-PSSWRD-GEN-FUNC.
+
+
+      * B"H.

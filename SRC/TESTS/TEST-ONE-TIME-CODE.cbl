@@ -9,9 +9,12 @@
       * through separately-exported Go functions on purpose ; see
       * ONE-TIME-CODE-FUNC.cbl's own header], then runs 300 more
       * recovery codes silently, checking for the same two classes of
-      * defect TEST-PSSWRD-GEN-FUNC.cbl checks for: an internal blank
-      * space, and a length outside the intended 12-15 range. Both
-      * counts should read 0.
+      * defect TEST-PSSWRD-GEN-FUNC.cbl checks for [an internal blank
+      * space, and a length outside the intended 12-15 range], plus
+      * one more check: that VERIFY-ONE-TIME-CODE-FUNC independently
+      * accepts every single one, since ONE-TIME-CODE-FUNC now
+      * regenerates internally until that same function accepts its
+      * own output. All three counts should read 0.
       * Tectonics: go build -buildmode=c-shared -o
       * RECOVERY_RANDOM_GEN.dll RECOVERY_RANDOM_GEN.go
       *     ********************
@@ -19,7 +22,8 @@
       * SECURE_RANDOM_NUMBER_GEN.dll SECURE_RANDOM_NUMBER_GEN.go
       *     ********************
       * cobc -x -fstatic-call TEST-ONE-TIME-CODE.cbl
-      * ONE-TIME-CODE-FUNC.cbl RECOVERY_RANDOM_GEN.dll
+      * ONE-TIME-CODE-FUNC.cbl VERIFY-ONE-TIME-CODE-FUNC.cbl
+      * RECOVERY_RANDOM_GEN.dll
       * SECURE_RANDOM_NUMBER_GEN.dll -o TEST-ONE-TIME-CODE
       ******************************************************************
        IDENTIFICATION DIVISION.
@@ -28,19 +32,22 @@
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        REPOSITORY.
-           FUNCTION ONE-TIME-CODE-FUNC.
+           FUNCTION ONE-TIME-CODE-FUNC
+           FUNCTION VERIFY-ONE-TIME-CODE-FUNC.
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
        01 WS-RESULT.
            05 WS-CODE        PIC X(15).
            05 WS-STATUS      PIC 9.
+       01 WS-RECHECK       PIC 9.
        01 WS-PASSWORD-R   PIC S9(3) COMP-5.
        01 WS-I            PIC 9(3).
        01 WS-J            PIC 9(2).
        01 WS-USED-LEN      PIC 9(2).
        01 WS-GAP-COUNT     PIC 9(3) VALUE 0.
        01 WS-BAD-LEN-COUNT PIC 9(3) VALUE 0.
+       01 WS-REJECT-COUNT  PIC 9(3) VALUE 0.
        01 WS-HAS-GAP       PIC X.
 
        PROCEDURE DIVISION.
@@ -71,7 +78,9 @@
                DISPLAY "  OK: correctly in the 1-78 range."
            END-IF
 
-      * Part 3: run 300 more recovery codes, checking for defects.
+      * Part 3: run 300 more recovery codes, checking for defects,
+      * plus one more check: that VERIFY-ONE-TIME-CODE-FUNC
+      * independently agrees every result is actually valid.
 
            DISPLAY " ".
            DISPLAY "=== Running 300 more, checking for defects ===".
@@ -94,6 +103,12 @@
                IF WS-HAS-GAP = "Y"
                    ADD 1 TO WS-GAP-COUNT
                END-IF
+
+               MOVE FUNCTION VERIFY-ONE-TIME-CODE-FUNC(WS-CODE)
+                   TO WS-RECHECK
+               IF WS-RECHECK NOT = 1
+                   ADD 1 TO WS-REJECT-COUNT
+               END-IF
            END-PERFORM
 
            DISPLAY " ".
@@ -101,6 +116,15 @@
                WS-BAD-LEN-COUNT.
            DISPLAY "Codes with an internal gap (want 0): "
                WS-GAP-COUNT.
+           DISPLAY "Codes VERIFY-ONE-TIME-CODE-FUNC rejected (want 0): "
+               WS-REJECT-COUNT.
 
-           MOVE 0 TO RETURN-CODE
-           STOP RUN.
+           ACCEPT OMITTED
+
+           STOP RUN RETURNING 0.
+
+       END PROGRAM TEST-ONE-TIME-CODE.
+
+
+
+      * B"H.

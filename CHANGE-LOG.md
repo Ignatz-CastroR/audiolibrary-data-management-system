@@ -9,7 +9,7 @@ Format follows [Keep a Changelog][https://keepachangelog.com/].
   outside COBOL/Go experiment that surfaced several stale references
   by comparison. Nothing in this entry touches program logic.
 - `VALIDATE-EMAIL-FUNC.cbl` and three files in `SRC/TESTS/`
-  []`TEST-ONE-TIME-CODE.cbl`, `TEST-VALIDATE-EMAIL.cbl`,
+  [`TEST-ONE-TIME-CODE.cbl`, `TEST-VALIDATE-EMAIL.cbl`,
   `TEST-SEND-RECOVERY-EMAIL.cbl`] were missing the standard
   Author/Place/Purpose/Tectonics header every other source file in
   this repository carries. Added, matching the existing convention.
@@ -106,6 +106,77 @@ Format follows [Keep a Changelog][https://keepachangelog.com/].
   validated alternative [bypassing `ACCEPT` entirely via a raw-
   keyboard-reading Go bridge] for whichever screen in this project
   needs real typing and reliable arrow-key navigation together first.
+
+## [2026-08-29] [generate-then-verify]
+
+### Added
+- `COBOL-FUNCTIONS/VERIFY-ONE-TIME-CODE-FUNC.cbl`. Verifies that a
+  one-time recovery code produced by `ONE-TIME-CODE-FUNC` actually
+  contains at least one upper case letter, one digit, and one
+  special character from the closed 13-character set
+  `!?.@-=*+$&/%#` [the exact same specials `ONE-TIME-CODE-FUNC`'s own
+  45-character alphabet draws from]. This is a diversity gate, not a
+  structural check: `ONE-TIME-CODE-FUNC` already guarantees length
+  and alphabet by construction, but nothing stops pure chance from
+  drawing 12-15 letters in a row with no digit or special character
+  at all. No lower case check exists, since that character list contains no
+  lower case letters; a character outside the three recognized
+  categories is ignored rather than rejected, on purpose. Returns 1
+  for a valid code, 0 for an invalid one, matching
+  `VALIDATE-EMAIL-FUNC` and `VERIFY-PSSWRD-FUNC`'s own polarity.
+- `TESTS/TEST-VERIFY-ONE-TIME-CODE-FUNC.cbl`. Seven fixed cases [3
+  valid, 4 invalid] covering a missing digit, a missing special
+  character, a missing upper case letter, and an all-blank input,
+  alongside two genuinely valid codes and one valid code that also
+  carries characters outside the three recognized categories [a
+  lower case letter and a colon], confirming those are ignored
+  rather than rejected.
+
+### Changed
+- `PSSWRD-GEN-FUNC.cbl` and `ONE-TIME-CODE-FUNC.cbl` now regenerate
+  internally, from scratch, until `VERIFY-PSSWRD-FUNC` /
+  `VERIFY-ONE-TIME-CODE-FUNC` respectively accept the result, closing
+  the real [if previously unguarded] possibility that pure chance
+  draws 12-15 characters from either alphabet with no digit, or no
+  special character, or [for passwords] no upper or lower case
+  letter at all.
+- The first version of this retry loop used a self-referential
+  `PERFORM` [a paragraph performing itself again on rejection].
+  Direct testing on this project's own GnuCOBOL build found that
+  pattern crashes with a segmentation fault at a self-referential
+  `PERFORM` depth of exactly 501, with no warning below that: the
+  same class of failure already hit once before in the
+  `JUEGO-PKMN-9-3` COBOL project, there from a different cause but
+  the same underlying mechanism [`PERFORM` is not reentrant by
+  default; a paragraph performing itself while already being
+  performed is undefined per the COBOL standard, RECURSIVE clause
+  or not]. In practice, a 500-deep retry chain here is astronomically
+  unlikely [each retry independently succeeds with roughly 73-80%
+  probability, so 500 consecutive failures would need a chance on
+  the order of 10^-120], and a 50,000-iteration stress run against
+  the self-referential version, independently re-verifying every
+  result, produced zero failures and no crash. The risk was real but
+  vanishingly unlikely to ever be hit here specifically; it was
+  fixed anyway rather than left as a known, dismissed possibility.
+  Both functions now use a flat `PERFORM UNTIL` loop instead: no
+  nested stack frames per retry, so no depth limit exists no matter
+  how many attempts an unlucky draw needs. Re-verified with the same
+  50,000-iteration independent-recheck stress test against the new
+  version: zero failures, zero crashes.
+- `TESTS/TEST-PSSWRD-GEN-FUNC.cbl` and `TESTS/TEST-ONE-TIME-CODE.cbl`
+  both had their own documented `Tectonics` build command tested
+  directly: both compiled successfully without
+  `VERIFY-PSSWRD-FUNC.cbl`/`VERIFY-ONE-TIME-CODE-FUNC.cbl` on the
+  link line [`-fstatic-call` does not require every user-defined
+  `FUNCTION` to resolve at link time], but crashed at runtime the
+  moment the very first sample password/code was generated, with
+  `libcob: error: user-defined FUNCTION '...' not found`. Both
+  `Tectonics` blocks corrected to include the missing `.cbl`. Both
+  test programs also extended to independently call
+  `VERIFY-PSSWRD-FUNC`/`VERIFY-ONE-TIME-CODE-FUNC` against every one
+  of their existing 300 silent iterations and count any rejection
+  [want 0], now that the diversity guarantee above is something
+  worth a regression test of its own, not just length and gap.
 
 ## [2026-08-29] [VERIFY-PSSWRD-FUNC]
 

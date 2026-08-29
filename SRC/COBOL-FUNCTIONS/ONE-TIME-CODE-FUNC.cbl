@@ -19,6 +19,12 @@
        IDENTIFICATION DIVISION.
        FUNCTION-ID. ONE-TIME-CODE-FUNC.
 
+       ENVIRONMENT DIVISION.
+
+       CONFIGURATION SECTION.
+           REPOSITORY.
+           FUNCTION VERIFY-ONE-TIME-CODE-FUNC.
+
        DATA DIVISION.
 
        WORKING-STORAGE SECTION.
@@ -41,6 +47,7 @@
 
        01 LS-STRING-POINTER        PIC 9(2).
        01 LS-CHARACTER             PIC X.
+       01 LS-RESULT-CODE           PIC 9.
 
        LINKAGE SECTION.
 
@@ -81,19 +88,35 @@
 
        PSSWRD-DEFINITION-PAR.
 
-           MOVE SPACES TO LS-SECURITY-CODE
-           MOVE 1 TO LS-STRING-POINTER
+      * Regenerates from scratch, as many times as it takes, until
+      * VERIFY-ONE-TIME-CODE-FUNC accepts the result. A flat PERFORM
+      * UNTIL, not a self-referential PERFORM: the latter nests one
+      * stack frame per retry and crashes past a few hundred
+      * consecutive retries on this GnuCOBOL build [confirmed by
+      * direct test]; this loop carries no such risk no matter how
+      * many retries a particularly unlucky draw needs.
 
-           PERFORM VARYING LS-COUNTER FROM 1 BY 1
-           UNTIL   LS-COUNTER > LS-PSSWRD-LENGTH
+           MOVE 0 TO LS-RESULT-CODE
+           PERFORM UNTIL LS-RESULT-CODE = 1
 
-               CALL WS-RANDOM-FUNC RETURNING LS-RANDOM-NUM
-               MOVE WS-EACH-VALUE(LS-RANDOM-NUM) TO LS-CHARACTER
+               MOVE SPACES TO LS-SECURITY-CODE
+               MOVE 1 TO LS-STRING-POINTER
 
-               STRING LS-CHARACTER DELIMITED BY SIZE
-               INTO LS-SECURITY-CODE
-               WITH POINTER LS-STRING-POINTER
-               END-STRING
+               PERFORM VARYING LS-COUNTER FROM 1 BY 1
+               UNTIL   LS-COUNTER > LS-PSSWRD-LENGTH
+
+                   CALL WS-RANDOM-FUNC RETURNING LS-RANDOM-NUM
+                   MOVE WS-EACH-VALUE(LS-RANDOM-NUM) TO LS-CHARACTER
+
+                   STRING LS-CHARACTER DELIMITED BY SIZE
+                   INTO LS-SECURITY-CODE
+                   WITH POINTER LS-STRING-POINTER
+                   END-STRING
+
+               END-PERFORM
+
+               MOVE FUNCTION VERIFY-ONE-TIME-CODE-FUNC(LS-SECURITY-CODE)
+                   TO LS-RESULT-CODE
 
            END-PERFORM.
 
@@ -102,6 +125,5 @@
            EXIT FUNCTION.
 
        END FUNCTION ONE-TIME-CODE-FUNC.
-
 
       * B"H.

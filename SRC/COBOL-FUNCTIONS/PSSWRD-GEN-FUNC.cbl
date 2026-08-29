@@ -18,6 +18,11 @@
        IDENTIFICATION DIVISION.
        FUNCTION-ID. PSSWRD-GEN-FUNC.
 
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       REPOSITORY.
+           FUNCTION VERIFY-PSSWRD-FUNC.
+
        DATA DIVISION.
 
        WORKING-STORAGE SECTION.
@@ -38,17 +43,9 @@
        01 LS-PSSWRD-LENGTH     PIC 9(2).
        01 LS-RANDOM-NUM        PIC S9(3) COMP-5.
        01 LS-COUNTER           PIC 9(2).
-
-      * We kept separate from LS-COUNTER on purpose: STRING's WITH
-      * POINTER clause silently advances whatever variable you
-      * give it, by the number of characters just written. Using
-      * the SAME variable as a PERFORM VARYING loop counter means
-      * two independent things try to increment it every
-      * iteration: the loop advances it by 1, and STRING
-      * advances it again by however many characters it wrote.
-
        01 LS-STRING-POINTER    PIC 9(2).
        01 LS-CHARACTER         PIC X.
+       01 LS-RESULT-CODE       PIC 9.
 
        LINKAGE SECTION.
        01 LK-PARAMS.
@@ -88,19 +85,35 @@
 
        PSSWRD-DEFINITION-PAR.
 
-           MOVE SPACES TO LS-PASSWORD
-           MOVE 1 TO LS-STRING-POINTER
+      * Regenerates from scratch, as many times as it takes, until
+      * VERIFY-PSSWRD-FUNC accepts the result. A flat PERFORM UNTIL,
+      * not a self-referential PERFORM: the latter nests one stack
+      * frame per retry and crashes past a few hundred consecutive
+      * retries on this GnuCOBOL build [confirmed by direct test];
+      * this loop carries no such risk no matter how many retries a
+      * particularly unlucky draw needs.
 
-           PERFORM VARYING LS-COUNTER FROM 1 BY 1
-           UNTIL   LS-COUNTER > LS-PSSWRD-LENGTH
+           MOVE 0 TO LS-RESULT-CODE
+           PERFORM UNTIL LS-RESULT-CODE = 1
 
-               CALL WS-RANDOM-FUNC RETURNING LS-RANDOM-NUM
-               MOVE WS-EACH-VALUE(LS-RANDOM-NUM) TO LS-CHARACTER
+               MOVE SPACES TO LS-PASSWORD
+               MOVE 1 TO LS-STRING-POINTER
 
-               STRING LS-CHARACTER DELIMITED BY SIZE
-               INTO LS-PASSWORD
-               WITH POINTER LS-STRING-POINTER
-               END-STRING
+               PERFORM VARYING LS-COUNTER FROM 1 BY 1
+               UNTIL   LS-COUNTER > LS-PSSWRD-LENGTH
+
+                   CALL WS-RANDOM-FUNC RETURNING LS-RANDOM-NUM
+                   MOVE WS-EACH-VALUE(LS-RANDOM-NUM) TO LS-CHARACTER
+
+                   STRING LS-CHARACTER DELIMITED BY SIZE
+                   INTO LS-PASSWORD
+                   WITH POINTER LS-STRING-POINTER
+                   END-STRING
+
+               END-PERFORM
+
+               MOVE FUNCTION VERIFY-PSSWRD-FUNC(LS-PASSWORD)
+                   TO LS-RESULT-CODE
 
            END-PERFORM.
 
