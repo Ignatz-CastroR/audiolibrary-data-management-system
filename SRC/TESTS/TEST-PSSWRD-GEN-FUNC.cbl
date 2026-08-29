@@ -9,7 +9,7 @@
       * pointer collision, and a length outside the
       * intended 12-15 range. Both counts should read 0.
       * Tectonics: go build -buildmode=c-shared -o
-      * SECURE_RANDOM_NUMBER_GEN.dll secure_random.go
+      * SECURE_RANDOM_NUMBER_GEN.dll SECURE_RANDOM_NUMBER_GEN.go
       *     ********************
       * cobc -x -fstatic-call TEST-PSSWRD-GEN-FUNC.cbl
       * PSSWRD-GEN-FUNC.cbl SECURE_RANDOM_NUMBER_GEN.dll

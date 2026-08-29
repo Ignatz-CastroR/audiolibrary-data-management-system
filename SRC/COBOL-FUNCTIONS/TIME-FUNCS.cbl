@@ -13,8 +13,8 @@
       * program temporarily, and measures when the block time has ended.
       * Requires: copybook TIMESTAMP.cpy [in the same folder or
       * by using the COB_COPY_DIR option when compiling], or by using
-      * "-I .../COPYBOOKS/TIMESTAMP.cpy" when compiling.
-      * Tectonics: cobc -c TIME-FUNCS.cbl -I ../COPYBOOKSTIMESTAMP.cpy
+      * "-I ../COPYBOOKS" when compiling.
+      * Tectonics: cobc -c TIME-FUNCS.cbl -I ../COPYBOOKS
       * [needs the -I flag: the copybook lives in a
       * separate folder {the COPYBOOKS/ subfolder}, and
       * cobc only checks the same present directory
@@ -137,7 +137,7 @@
                ADD WS-CENTISECONDS-PER-DAY TO LS-CENTISECONDS-DIFFERENCE
            END-IF
 
-      * After the "borrow", LS-CENTISECONDS-DIFFERENCE isalways >= 0;
+      * After the "borrow", LS-CENTISECONDS-DIFFERENCE is always >= 0;
       * the sign of the whole result depends only on the days.
 
            IF LS-DAYS-DIFFERENCE < ZERO

@@ -4,15 +4,15 @@
       * Program tested: TIME-FUNCS.cbl
       * Purpose: Regression test battery for the TIME-NOW and
       * TIME-ELAPSED COBOL functions contained in
-      * COBOL-FUNCTIONS/TIMES-FUNCS.cbl. Covers the classic calendar-
+      * COBOL-FUNCTIONS/TIME-FUNCS.cbl. Covers the classic calendar-
       * arithmetic edge cases: same minute, minute crossing,
       * hour crossing, midnight crossing, month crossing, a
       * leap-year boundary, and reversed order.
       * Requires: copybook TIMESTAMP.cpy [in the same folder or
       * by using the COB_COPY_DIR option when compiling], or by using
-      * "-I .../COPYBOOKS/TIMESTAMP.cpy" when compiling.
-      * Tectonics: cobc -x TEST-TIMES-FUNCS.cbl TIMES-FUNCS.cbl
-      *  -I ../COPYBOOKSTIMESTAMP.cpy -o TEST-TIMES-FUNCS
+      * "-I ../COPYBOOKS" when compiling.
+      * Tectonics: cobc -x TEST-TIMES-FUNCS.cbl TIME-FUNCS.cbl
+      *  -I ../COPYBOOKS -o TEST-TIMES-FUNCS
       * [needs the -I flag: the copybook lives in a
       * separate folder {the COPYBOOKS/ subfolder}, and
       * cobc only checks the same present directory

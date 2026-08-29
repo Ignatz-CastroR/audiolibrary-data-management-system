@@ -21,22 +21,23 @@ import (
 // C.GoStringN would risk reading past the real content into whatever
 // memory happens to follow it.
 
-// "smtpUserWidth" matches the same 45 characters already used for the
-// recipient email address [PIC X(45)], since both are themselves email addresses.
-// There is no separate from-address width at all: the sending account
-// is used as its own from-address, since every provider in
-// "knownProviders" requires the two to match for a personal account
-// anyways. "smtpPasswordWidth" is sized well beyond any real app
-// password length seen from Google, Yahoo, Microsoft, or Apple [all
-// 16 characters or fewer] specifically to avoid the kind of
-// undersized-field truncation this project has already found and
-// fixed more than once before. There is no host or port width here
-// at all either: see "knownProviders" infra.
+// "emailFieldWidth" and "smtpUserWidth" both match the 60 characters
+// used for an e-mail address field elsewhere in this project [see
+// LS-EMAIL-ADDRESS in CONFIG-INFO-MOD.cbl/MAIN.cbl], since both are
+// themselves e-mail addresses. There is no separate from-address
+// width at all: the sending account is used as its own from-address,
+// since every provider in "knownProviders" requires the two to match
+// for a personal account anyways. "smtpPasswordWidth" is sized well
+// beyond any real app password length seen from Google, Yahoo,
+// Microsoft, or Apple [all 16 characters or fewer] specifically to
+// avoid the kind of undersized-field truncation this project has
+// already found and fixed more than once before. There is no host or
+// port width here at all either: see "knownProviders" infra.
 
 const (
-	emailFieldWidth    = 45 // This matches the COBOL program sending field of PIC X(45).
+	emailFieldWidth    = 60 // This matches the COBOL program sending field of PIC X(60).
 	passwordFieldWidth = 15 // This matches the COBOL program sending field of PIC X(15).
-	smtpUserWidth      = 45
+	smtpUserWidth      = 60
 	smtpPasswordWidth  = 30
 )
 

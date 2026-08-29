@@ -9,7 +9,7 @@
       * actually being reached, and a reasonable spread across the
       * range.
       * Tectonics: go build -buildmode=c-shared -o
-      * SECURE_RANDOM_NUMBER_GEN.dll secure_random.go
+      * SECURE_RANDOM_NUMBER_GEN.dll SECURE_RANDOM_NUMBER_GEN.go
       *   *********************
       * cobc -x -fstatic-call TEST-SECURE-RANDOM-1-78.cbl
       * SECURE_RANDOM_NUMBER_GEN.dll -o TEST-SECURE-RANDOM-1-78

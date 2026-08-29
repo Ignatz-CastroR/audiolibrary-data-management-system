@@ -1,10 +1,10 @@
       ******************************************************************
-      * Author: NACHO
+      * Author: ENG. JOSE IGNACIO CASTRO DE R.
       * Date: 2026/08/26, 11:39, MILD-SUNNY MORNING
       * Purpose: Generates a 12-15 character one-time recovery code,
-      * drawn from a 46-character list deliberately
-      * trimmed of lowercase letters and the digits 0 and 1,
-      * and the upper case letter O and I, so a
+      * drawn from a 45-character list deliberately
+      * trimmed of lowercase letters, the digits 0 and 1,
+      * and the upper case letters I and O, so a
       * code handwritten and later retyped by the user is less
       * likely to be wrongly written or later misread.
       * Tectonics: cobc -x CALLER.cbl ONE-TIME-CODE-FUNC.cbl
@@ -26,11 +26,11 @@
        01 WS-RANDOM-FUNC  PIC X(20)
            VALUE "RECOVERY_RANDOM_GEN".
 
-       01 WS-VALUES-LITERAL PIC X(46) VALUE
-           "ABCDEFGHJKLMNOPQRSTUVWXYZ23456789!?.@-=*+$&/%#".
+       01 WS-VALUES-LITERAL PIC X(45) VALUE
+           "ABCDEFGHJKLMNPQRSTUVWXYZ23456789!?.@-=*+$&/%#".
 
        01 WS-VALUES-TABLE REDEFINES WS-VALUES-LITERAL.
-           05 WS-EACH-VALUE OCCURS 46 TIMES PIC X.
+           05 WS-EACH-VALUE OCCURS 45 TIMES PIC X.
 
        LOCAL-STORAGE SECTION.
 
@@ -66,13 +66,13 @@
            CALL WS-RANDOM-FUNC RETURNING LS-RANDOM-NUM
 
            EVALUATE LS-RANDOM-NUM
-               WHEN 1 THROUGH 12
+               WHEN 1 THROUGH 11
                    MOVE 12 TO LS-PSSWRD-LENGTH
-               WHEN 13 THROUGH 24
+               WHEN 12 THROUGH 22
                    MOVE 13 TO LS-PSSWRD-LENGTH
-               WHEN 25 THROUGH 36
+               WHEN 23 THROUGH 33
                    MOVE 14 TO LS-PSSWRD-LENGTH
-               WHEN 37 THROUGH 46
+               WHEN 34 THROUGH 45
                    MOVE 15 TO LS-PSSWRD-LENGTH
                WHEN OTHER
                    SET LK-ERROR TO TRUE

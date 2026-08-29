@@ -1,12 +1,32 @@
+      ******************************************************************
+      * Author: ENG. JOSE IGNACIO CASTRO DE R.
+      * Place: DESAMPARADOS CENTRO, SAN JOSE, COSTA RICA
+      * Program tested: SEND_RECOVERY_EMAIL.go [and its companion,
+      * HAS_INTERNET_CONNECTION]
+      * Purpose: Interactive, end-to-end test. Checks for an internet
+      * connection first, then prompts for a recipient address and
+      * the sender's own e-mail/app-password pair at the keyboard, so
+      * no real credentials are ever hard-coded into a file committed
+      * to this repository. Reports which of the seven documented
+      * status codes SEND_RECOVERY_EMAIL returned. For repeated local
+      * testing without retyping credentials every run, see the
+      * separate, gitignored TEST-SEND-RECOVERY-EMAIL-LOCAL.cbl
+      * instead.
+      * Tectonics: go build -buildmode=c-shared -o
+      * SEND_RECOVERY_EMAIL.dll SEND_RECOVERY_EMAIL.go
+      *     ********************
+      * cobc -x -fstatic-call TEST-SEND-RECOVERY-EMAIL.cbl
+      * SEND_RECOVERY_EMAIL.dll -o TEST-SEND-RECOVERY-EMAIL
+      ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TEST-SEND-RECOVERY-EMAIL.
 
        DATA DIVISION.
 
        WORKING-STORAGE SECTION.
-       01 WS-EMAIL                  PIC X(45).
+       01 WS-EMAIL                  PIC X(60).
        01 WS-RECOVERY-PASSWORD      PIC X(15) VALUE "AB3xQ7-KzM9-2Lp".
-       01 WS-SMTP-USER              PIC X(45).
+       01 WS-SMTP-USER              PIC X(60).
        01 WS-SMTP-PSWD              PIC X(30).
        01 WS-STATUS                 PIC S9(3) COMP-5.
        01 WS-CONNECTED              PIC S9(3) COMP-5.

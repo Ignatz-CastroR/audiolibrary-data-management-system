@@ -1,3 +1,17 @@
+      ******************************************************************
+      * Author: ENG. JOSE IGNACIO CASTRO DE R.
+      * Place: DESAMPARADOS CENTRO, SAN JOSE, COSTA RICA
+      * Purpose: Format-only validation for a user-supplied e-mail
+      * address: exactly one "@", no internal spaces, a non-empty
+      * local part, a non-empty domain part, at least one "." in the
+      * domain, and that domain neither starting nor ending in ".".
+      * This is a syntax check only - it does NOT confirm the address
+      * exists or can receive mail; that is what SEND_RECOVERY_EMAIL
+      * [via net/mail's own, stricter parser on the Go side] is for.
+      * Tectonics: cobc -c VALIDATE-EMAIL-FUNC.cbl [or -m for a
+      * module], before being bound to a calling COBOL program.
+      * Security: No I/O at all. Read-only, in-memory string checks.
+      ******************************************************************
        IDENTIFICATION DIVISION.
        FUNCTION-ID. VALIDATE-EMAIL-FUNC.
 

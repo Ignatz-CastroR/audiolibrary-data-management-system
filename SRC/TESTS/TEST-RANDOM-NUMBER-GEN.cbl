@@ -9,7 +9,7 @@
       * processes] to also check for cross-run seed collisions: see
       * the header of RANDOM-NUMBER-GEN-FUNC.cbl for why that matters.
       * Tectonics: cobc -x TEST-RANDOM-NUMBER-GEN.cbl
-      * RANDOM-NUMBER-GEN.cbl -o TEST-RANDOM-NUMBER-GEN
+      * RANDOM-NUMBER-GEN-FUNC.cbl -o TEST-RANDOM-NUMBER-GEN
       ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TEST-RANDOM-NUMBER-GEN.
@@ -17,7 +17,7 @@
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        REPOSITORY.
-           FUNCTION RANDOM-NUMBER-GEN.
+           FUNCTION RANDOM-NUMBER-GEN-FUNC.
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
@@ -33,7 +33,7 @@
        PROCEDURE DIVISION.
        MAIN.
            PERFORM VARYING WS-I FROM 1 BY 1 UNTIL WS-I > 200
-               MOVE FUNCTION RANDOM-NUMBER-GEN TO WS-R
+               MOVE FUNCTION RANDOM-NUMBER-GEN-FUNC TO WS-R
                IF WS-R > 99
                    ADD 1 TO WS-OUT-OF-RANGE
                END-IF

@@ -24,7 +24,7 @@ direct SQL database driver access, among other things. The same is true
 of every COBOL implementation, since none of this was ever part of any
 COBOL standard. Rather than risking a flawed, hand-rolled reproduction of
 any of these, this project bridges to small, focused Go functions for
-exactly the pieces of functionality COBOL can't do on its own, for
+exactly the pieces of functionality COBOL can't do on its own; for
 instance, crypto/rand for anything security-relevant, and [planned] a
 SQLite driver for the database layer. Everything else stays pure COBOL.
 
@@ -36,18 +36,21 @@ SQLite driver for the database layer. Everything else stays pure COBOL.
                             planned login/menu flow]
       COBOL-FUNCTIONS/      Standalone, independently-tested utility
                             functions [time arithmetic, secure password
-                            and recovery-code generation]
+                            and recovery-code generation, etc.]
       COBOL-MODULES/        Larger interactive modules [login, settings,
-                            menus]; not yet built
+                            menus]; work has begun with
+                            CONFIG-INFO-MOD.cbl, presently reading the
+                            saved account configuration only
       COPYBOOKS/            Shared record layouts, included via COPY
       TESTS/                Test programs proving each function in
-                            COBOL-FUNCTIONS/ actually works: built
+                            COBOL-FUNCTIONS/ and GO-FUNCTIONS/
+                            actually works: built
                             and run before every change is trusted
       GO-FUNCTIONS/         Go bridges for anything COBOL can't do
                             natively
       DAT-FILES/            Runtime data [configuration files,
                             indexed files, the SQLite
-                            database]; never committed; see .gitignore
+                            database, etc.]; never committed; see .gitignore
 
 ## Building
 
@@ -91,12 +94,15 @@ considered done. See CHANGE-LOG.md for what's been caught this way.
 ## Status
 
 Actively in development. Part of the utility layer [time arithmetic, secure
-password generation, one-time recovery codes, and e-mail-based password
-recovery] is already built and has dedicated test coverage; the e-mail
+password generation, one-time recovery codes, e-mail-based password
+recovery, etc.] is already built and has dedicated test coverage; the e-mail
 recovery functionality has been verified end-to-end against real Gmail
-and Yahoo accounts. The interactive login/menu system and the
-Excel-to-SQLite migration pipeline are designed [see DOCS/] but have not been
-implemented yet.
+and Yahoo accounts. The interactive login/menu system has a placeholder
+`MAIN.cbl` front page and language selector already working end-to-end,
+and `CONFIG-INFO-MOD.cbl` has begun reading the saved account
+configuration back; the account registration screen itself and the
+Excel-to-SQLite migration pipeline are designed [see DOCS/] but have not
+been implemented yet.
 
 ## License
 

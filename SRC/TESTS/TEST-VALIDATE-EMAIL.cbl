@@ -1,3 +1,16 @@
+      ******************************************************************
+      * Author: ENG. JOSE IGNACIO CASTRO DE R.
+      * Place: DESAMPARADOS CENTRO, SAN JOSE, COSTA RICA
+      * Program tested: VALIDATE-EMAIL-FUNC.cbl
+      * Purpose: Regression test running 11 fixed cases [3 valid, 8
+      * invalid] against VALIDATE-EMAIL-FUNC: a missing "@", two "@"
+      * signs, a missing local or domain part, a domain with no dot,
+      * a domain starting or ending in a dot, an internal space, and
+      * an all-space input, alongside three genuinely valid addresses.
+      * Reports PASS/FAIL per case and a total failure count [want 0].
+      * Tectonics: cobc -x -fstatic-call TEST-VALIDATE-EMAIL.cbl
+      * VALIDATE-EMAIL-FUNC.cbl -o TEST-VALIDATE-EMAIL
+      ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TEST-VALIDATE-EMAIL.
 

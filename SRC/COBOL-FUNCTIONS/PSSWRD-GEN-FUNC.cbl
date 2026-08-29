@@ -4,7 +4,7 @@
       * stochastic length] drawn from a 78-character list, using the
       * OS-backed and cryptographically secure SECURE_RANDOM_NUMBER_GEN
       * Go function, for every random choice making up the final
-      * passwrord suggestion [both the passwrods's length, as mentioned,
+      * password suggestion [both the password's length, as mentioned,
       * and each individual composing character].
       * Tectonics: cobc -c PSSWRD-GEN-FUNC.cbl [or -m for a module],
       * before being bound to a calling COBOL program.

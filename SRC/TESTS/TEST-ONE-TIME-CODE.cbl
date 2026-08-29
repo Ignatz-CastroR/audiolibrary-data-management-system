@@ -1,3 +1,27 @@
+      ******************************************************************
+      * Author: ENG. JOSE IGNACIO CASTRO DE R.
+      * Place: DESAMPARADOS CENTRO, SAN JOSE, COSTA RICA
+      * Program tested: ONE-TIME-CODE-FUNC.cbl
+      * Purpose: Displays 10 real sample recovery codes so you can
+      * actually look at them, calls SECURE_RANDOM_NUMBER_GEN directly
+      * in the same run to prove the password-suggestion RNG still
+      * works correctly alongside the recovery-code RNG [both go
+      * through separately-exported Go functions on purpose ; see
+      * ONE-TIME-CODE-FUNC.cbl's own header], then runs 300 more
+      * recovery codes silently, checking for the same two classes of
+      * defect TEST-PSSWRD-GEN-FUNC.cbl checks for: an internal blank
+      * space, and a length outside the intended 12-15 range. Both
+      * counts should read 0.
+      * Tectonics: go build -buildmode=c-shared -o
+      * RECOVERY_RANDOM_GEN.dll RECOVERY_RANDOM_GEN.go
+      *     ********************
+      * go build -buildmode=c-shared -o
+      * SECURE_RANDOM_NUMBER_GEN.dll SECURE_RANDOM_NUMBER_GEN.go
+      *     ********************
+      * cobc -x -fstatic-call TEST-ONE-TIME-CODE.cbl
+      * ONE-TIME-CODE-FUNC.cbl RECOVERY_RANDOM_GEN.dll
+      * SECURE_RANDOM_NUMBER_GEN.dll -o TEST-ONE-TIME-CODE
+      ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TEST-ONE-TIME-CODE.
 

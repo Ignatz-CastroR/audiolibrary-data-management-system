@@ -1,6 +1,6 @@
       ******************************************************************
       * Author: ENG. JOSE IGNACIO CASTRO DE R.
-      * Date: 2016/08/25, 18:25, CLOUDY NIGHT
+      * Date: 2026/08/25, 18:25, CLOUDY NIGHT
       * Place: DESAMPARADOS CENTRO, SAN JOSE, COSTA RICA
       * Copybook: TIMESTAMP
       * Purpose: Internal structure of a "time-stamp moment" produced
