@@ -1,3 +1,6 @@
+Date: 2026/08/30, 17:32, CLOUDY AFTERNOON.
+Version: 3.0.
+
 # Compiled COBOL artifacts - never commit build output, only source
 *.o
 *.obj
@@ -17,17 +20,6 @@
 *.dylib
 *.h
 
-# Runtime data: indexed files, the SQLite database, anything holding
-# real (or test) user data, hashed passwords, or recovery codes.
-# The folder itself is tracked (see SRC/DAT-FILES/.gitkeep) - its
-# contents at runtime are not, on purpose.
-SRC/DAT-FILES/*
-!SRC/DAT-FILES/.gitkeep
-
-# Personal working folders - never intended for this public repo
-HISTORICAL/
-INSTRUCTIONS/
-
 # OS-generated junk
 .DS_Store
 Thumbs.db
@@ -37,3 +29,17 @@ Desktop.ini
 .vscode/
 .idea/
 *.swp
+
+# Personal working folders: never intended for this public repo
+HISTORICAL/
+INSTRUCTIONS/
+
+# A project specific folder with test files that act as parameters to test each iteration of the app build.
+PROJECT-PARAMETER-FILES/
+
+# Runtime data: indexed files, the SQLite database, anything holding
+# real (or test) user data, hashed passwords, or recovery codes.
+# The folder itself is tracked (see SRC/DAT-FILES/.gitkeep) - its
+# contents at runtime are not, on purpose.
+SRC/DAT-FILES/*
+!SRC/DAT-FILES/.gitkeep

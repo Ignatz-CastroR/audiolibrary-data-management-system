@@ -11,7 +11,7 @@
       ******************************************************************
 
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. MAIN.
+       PROGRAM-ID. MAIN IS RECURSIVE.
        AUTHOR. ENG. JOSE IGNACIO CASTRO DE R.
        INSTALLATION.
        DATE-WRITTEN. 2026/08/26, 13:03, CLOUDY AFTERNOON.
@@ -506,7 +506,7 @@
            LINE 19 COLUMN 32
            VALUE
            "[THE ERASING KEY]; THIS'LL GET YOU BACK TO THE PREVIOUS MENU
-      -    "SO YOU MAY CHOOSE AGAIN.".
+      -    " SO YOU MAY CHOOSE AGAIN.".
 
        01 SP-LNG-SETTING-CONFIRM-SCREEN.
 
@@ -553,6 +553,8 @@
       * Spanish and English characters without corruptions.
 
            CALL "SYSTEM" USING WS-CODEPAGE-CMD
+
+           SET ENVIRONMENT "COB_SCREEN_EXCEPTIONS" TO "1"
 
       * COB_SCREEN_EXCEPTIONS is deliberately NOT set here anymore.
       * That setting only changes whether a single-field ACCEPT
